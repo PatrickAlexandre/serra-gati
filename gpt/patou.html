@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Serre - Sartrouville</title>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .dashboard {
+            padding: 20px;
+        }
+        .chart {
+            margin: 20px auto;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">Serre - Sartrouville</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="mdl-layout__content">
+        <div class="dashboard">
+            <h2>Tableau de bord</h2>
+            <div class="mdl-grid">
+                <!-- Temperature Card -->
+                <div class="mdl-cell mdl-cell--4-col">
+                    <div class="mdl-card mdl-shadow--2dp">
+                        <div class="mdl-card__title">
+                            <h2 class="mdl-card__title-text">Température</h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <p><span id="temperature">25</span> °C</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Humidity Card -->
+                <div class="mdl-cell mdl-cell--4-col">
+                    <div class="mdl-card mdl-shadow--2dp">
+                        <div class="mdl-card__title">
+                            <h2 class="mdl-card__title-text">Humidité</h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <p><span id="humidity">60</span> %</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Luminosity Card -->
+                <div class="mdl-cell mdl-cell--4-col">
+                    <div class="mdl-card mdl-shadow--2dp">
+                        <div class="mdl-card__title">
+                            <h2 class="mdl-card__title-text">Luminosité</h2>
+                        </div>
+                        <div class="mdl-card__supporting-text">
+                            <p><span id="luminosity">800</span> lux</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Dynamic Chart -->
+            <h3>Données de la serre</h3>
+            <div id="chart" class="chart"></div>
+        </div>
+    </main>
+
+    <!-- D3.js Script for Chart -->
+    <script>
+        // Sample Data for Temperature
+        const data = [
+            { time: '08:00', value: 20 },
+            { time: '10:00', value: 22 },
+            { time: '12:00', value: 25 },
+            { time: '14:00', value: 28 },
+            { time: '16:00', value: 26 }
+        ];
+
+        // Set Chart Dimensions
+        const width = 600;
+        const height = 300;
+        const margin = { top: 20, right: 30, bottom: 30, left: 40 };
+
+        const svg = d3.select("#chart")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        const x = d3.scalePoint()
+            .domain(data.map(d => d.time))
+            .range([margin.left, width - margin.right]);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.value)])
+            .range([height - margin.bottom, margin.top]);
+
+        // Axes
+        svg.append("g")
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x));
+
+        svg.append("g")
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y));
+
+        // Line
+        const line = d3.line()
+            .x(d => x(d.time))
+            .y(d => y(d.value));
+
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", "steelblue")
+            .attr("stroke-width", 2)
+            .attr("d", line);
+    </script>
+</body>
+</html>

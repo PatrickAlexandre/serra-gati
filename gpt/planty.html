@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interface Serre - Sartrouville</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- ApexCharts -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .card-header {
+      background-color: #00796b; /* Vert institutionnel */
+      color: #fff;
+    }
+    .card {
+      border-radius: 10px;
+    }
+    .chart-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Serre - Sartrouville</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mt-4 flex-grow">
+    <div class="row g-4">
+      
+      <!-- Météo Locale -->
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header text-center">
+            <h5>Conditions climatiques</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-unstyled text-lg">
+              <li>Température locale : <span id="weather-temp">--</span> °C</li>
+              <li>Humidité locale : <span id="weather-humidity">--</span> %</li>
+              <li>Vitesse du vent : <span id="weather-wind">--</span> km/h</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphique -->
+      <div class="col-md-8">
+        <div class="chart-card">
+          <h5 class="text-center mb-4 font-bold text-gray-700">Évolution de la température (24h)</h5>
+          <div id="chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liste des tâches -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header text-center">
+            <h5>Tâches agricoles</h5>
+          </div>
+          <div class="card-body">
+            <ul id="task-list" class="list-group">
+              <li class="list-group-item">Chargement des tâches...</li>
+            </ul>
+            <button id="add-task" class="btn btn-primary mt-3 w-100">Ajouter une tâche</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-3">
+    Interface créée pour la Serre de Sartrouville © 2025
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Coordonnées de Sartrouville
+    const latitude = 48.939;
+    const longitude = 2.172;
+
+    // Appeler l'API Open-Meteo
+    async function fetchWeather() {
+      const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+      const data = await response.json();
+
+      // Récupérer les données de la météo actuelle
+      const weather = data.current_weather;
+      document.getElementById("weather-temp").textContent = weather.temperature;
+      document.getElementById("weather-humidity").textContent = weather.humidity || "N/A";
+      document.getElementById("weather-wind").textContent = weather.windspeed;
+    }
+
+    // Simuler des données pour les tâches et le graphique
+    const tasks = [
+      { title: "Arroser les tomates", dueDate: "10 janvier 2025", responsible: "Anne-Laure" },
+      { title: "Récolter les fraises", dueDate: "15 janvier 2025", responsible: "Patrick" },
+    ];
+
+    const tempData = {
+      series: [{
+        name: "Température (°C)",
+        data: [22, 23, 24, 25, 26, 24, 22, 21, 23, 25, 26, 27, 24],
+      }],
+      chart: {
+        type: 'line',
+        height: 350
+      },
+      xaxis: {
+        categories: ["00h", "02h", "04h", "06h", "08h", "10h", "12h", "14h", "16h", "18h", "20h", "22h", "24h"]
+      }
+    };
+
+    // Initialiser le graphique ApexCharts
+    const chart = new ApexCharts(document.querySelector("#chart"), tempData);
+    chart.render();
+
+    // Afficher la liste des tâches
+    const taskList = document.getElementById("task-list");
+    taskList.innerHTML = ""; // Effacer le message de chargement
+    tasks.forEach(task => {
+      const li = document.createElement("li");
+      li.className = "list-group-item";
+      li.textContent = `${task.title} (Échéance : ${task.dueDate}, Responsable : ${task.responsible})`;
+      taskList.appendChild(li);
+    });
+
+    // Ajouter une nouvelle tâche
+    document.getElementById("add-task").addEventListener("click", () => {
+      const newTask = { title: "Nouveau travail", dueDate: "20 janvier 2025", responsible: "Morgan" };
+      tasks.push(newTask);
+      const li = document.createElement("li");
+      li.className = "list-group-item";
+      li.textContent = `${newTask.title} (Échéance : ${newTask.dueDate}, Responsable : ${newTask.responsible})`;
+      taskList.appendChild(li);
+    });
+
+    // Charger la météo
+    fetchWeather();
+  </script>
+</body>
+</html>

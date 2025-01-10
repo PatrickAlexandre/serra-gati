@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serre de Sartrouville Dashboard</title>
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .dashboard {
+      padding: 16px;
+    }
+
+    .mdl-card {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    .chart {
+      width: 100%;
+      height: 300px;
+    }
+
+    @media (min-width: 600px) {
+      .mdl-grid .mdl-cell {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <span class="mdl-layout-title">Serre de Sartrouville</span>
+        <div class="mdl-layout-spacer"></div>
+      </div>
+    </header>
+    <main class="mdl-layout__content">
+      <div class="dashboard">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--6-col">
+            <div class="mdl-card mdl-shadow--2dp">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Environmental Metrics</h2>
+              </div>
+              <div class="mdl-card__supporting-text">
+                <div id="env-chart" class="chart"></div>
+              </div>
+            </div>
+          </div>
+          <div class="mdl-cell mdl-cell--6-col">
+            <div class="mdl-card mdl-shadow--2dp">
+              <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Task Manager</h2>
+              </div>
+              <div class="mdl-card__supporting-text">
+                <ul id="task-list" class="mdl-list">
+                  <li class="mdl-list__item">Water plants</li>
+                  <li class="mdl-list__item">Check soil pH</li>
+                </ul>
+                <button id="add-task" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+                  <i class="material-icons">add</i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Sample environmental data
+    const data = [
+      { date: '2023-01-01', value: 20 },
+      { date: '2023-01-02', value: 25 },
+      { date: '2023-01-03', value: 23 },
+      { date: '2023-01-04', value: 22 }
+    ];
+
+    // D3 Chart Rendering
+    const svg = d3.select('#env-chart')
+      .append('svg')
+      .attr('width', '100%')
+      .attr('height', 300);
+
+    const width = document.getElementById('env-chart').clientWidth;
+    const height = 300;
+    const margin = { top: 20, right: 30, bottom: 30, left: 40 };
+
+    const x = d3.scaleBand()
+      .domain(data.map(d => d.date))
+      .range([margin.left, width - margin.right])
+      .padding(0.1);
+
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.value)])
+      .nice()
+      .range([height - margin.bottom, margin.top]);
+
+    svg.append('g')
+      .attr('fill', 'steelblue')
+      .selectAll('rect')
+      .data(data)
+      .join('rect')
+      .attr('x', d => x(d.date))
+      .attr('y', d => y(d.value))
+      .attr('height', d => y(0) - y(d.value))
+      .attr('width', x.bandwidth());
+
+    svg.append('g')
+      .call(d3.axisLeft(y))
+      .attr('transform', `translate(${margin.left},0)`);
+
+    svg.append('g')
+      .call(d3.axisBottom(x))
+      .attr('transform', `translate(0,${height - margin.bottom})`);
+
+    // Add Task Example
+    document.getElementById('add-task').addEventListener('click', () => {
+      const taskList = document.getElementById('task-list');
+      const newTask = document.createElement('li');
+      newTask.className = 'mdl-list__item';
+      newTask.textContent = 'New Task';
+      taskList.appendChild(newTask);
+    });
+  </script>
+</body>
+</html>

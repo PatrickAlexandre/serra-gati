@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serre de Sartrouville</title>
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .mdl-card {
+      margin: 10px;
+      padding: 10px;
+    }
+
+    #temperature-chart, #humidity-chart {
+      width: 100%;
+      height: 200px;
+    }
+  </style>
+</head>
+<body>
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <span class="mdl-layout-title">Serre de Sartrouville</span>
+      <div class="mdl-layout-spacer"></div>
+    </div>
+  </header>
+  <main class="mdl-layout__content">
+    <div class="mdl-grid">
+      <div class="mdl-cell mdl-cell--4-col mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">Température</h2>
+        </div>
+        <div id="temperature-chart"></div>
+      </div>
+      <div class="mdl-cell mdl-cell--4-col mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">Humidité</h2>
+        </div>
+        <div id="humidity-chart"></div>
+      </div>
+      <div class="mdl-cell mdl-cell--4-col mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text">Tâches</h2>
+        </div>
+        <ul id="tasks-list" class="mdl-list"></ul>
+      </div>
+    </div>
+  </main>
+  <script>
+    // Exemple de données statiques
+    const data = {
+      temperature: [15, 18, 20, 22, 25, 23],
+      humidity: [45, 50, 55, 60, 65, 70],
+      tasks: [
+        "Planter les tomates",
+        "Récolter les fraises",
+        "Arroser les concombres",
+        "Vérifier le système de chauffage"
+      ]
+    };
+
+    // Affichage des tâches
+    const taskList = d3.select('#tasks-list');
+    data.tasks.forEach(task => {
+      taskList.append('li')
+        .attr('class', 'mdl-list__item')
+        .text(task);
+    });
+
+    // Création des graphiques
+    const createChart = (selector, dataset, color) => {
+      const width = 300, height = 200;
+      const svg = d3.select(selector)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+      const xScale = d3.scaleBand()
+        .domain(d3.range(dataset.length))
+        .range([0, width])
+        .padding(0.1);
+
+      const yScale = d3.scaleLinear()
+        .domain([0, d3.max(dataset)])
+        .range([height, 0]);
+
+      svg.selectAll('rect')
+        .data(dataset)
+        .enter()
+        .append('rect')
+        .attr('x', (d, i) => xScale(i))
+        .attr('y', d => yScale(d))
+        .attr('width', xScale.bandwidth())
+        .attr('height', d => height - yScale(d))
+        .attr('fill', color);
+    };
+
+    createChart('#temperature-chart', data.temperature, 'steelblue');
+    createChart('#humidity-chart', data.humidity, 'green');
+  </script>
+</body>
+</html>
