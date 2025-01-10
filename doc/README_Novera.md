@@ -1,10 +1,10 @@
 # Interface Météo pour la Serre
 
 ## Jardiniers
-Bruno VERRAES
-Anne-Laure VILLETTE
-Morgan SGUBBI
-Patrick ASSIS
+- Bruno VERRAES
+- Anne-Laure VILLETTE
+- Morgan SGUBBI
+- Patrick ASSIS
 
 ## Données Météo Actuelles
 - Température actuelle : 5.6°C 

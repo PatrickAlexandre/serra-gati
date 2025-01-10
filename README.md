@@ -1,24 +1,24 @@
 # Interface visuelle (HTML) & Novera (GPT)
+- ** 📍 Coordonnées**: Latitude `48.950363`, Longitude `2.174544`
+  - Ces coordonnées correspondent à l'emplacement du Centre Technique Municipal (**CTM**) de Sartrouville, situé à cette adresse.
 
 ## Jardiniers
 
-- Bruno
-- Anne-Laure
-- Morgan
-- Patrick
+- Bruno VERRAES
+- Anne-Laure VILLETTE
+- Morgan SGUBBI
+- Patrick ASSIS
+
+## Technologies utilisées
+
+- **Tailwind CSS**
+- **ApexCharts** : Bibliothèque JavaScript pour la visualisation de données.
+- **Google Earth 3D** : Application pour explorer la Terre en trois dimensions.
 
 ## APIs
 
 ### Open-Meteo API
 - **Endpoint**: `https://api.open-meteo.com/v1/forecast`
-- **Coordonnées**: Latitude `48.950363`, Longitude `2.174544`
-  - Ces coordonnées correspondent à l'emplacement du Centre Technique Municipal (**CTM**) de Sartrouville, situé à cette adresse.
-
-## Technologies utilisées
-
-- **Tailwind CSS** : Framework CSS utilitaire moderne et flexible.
-- **ApexCharts** : Bibliothèque JavaScript pour la visualisation de données.
-- **Google Earth 3D** : Application pour explorer la Terre en trois dimensions.
 
 ## Comparatif des technologies CSS et JavaScript
 
